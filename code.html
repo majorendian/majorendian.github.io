@@ -20,6 +20,10 @@
 <a href="code.html">Code</a>
 <a href="projects.html">Projects</a>
 <a href="files.html">Files</a>
+<br/><br/>
+<img src="res/lang_en.png" onclick="language('en');" width=auto height=20 />
+<img src="res/lang_sk.png" onclick="language('sk');" width=auto height=20 />
+
   </div>
   <div class="content-area">
     <div class="rectbord">
@@ -62,6 +66,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import statics_config
 
 def contents(filename):
   with open(filename) as fp:
@@ -102,7 +107,15 @@ class Page (object):
       if(m):
         if(m.group(0)):
           print("Found .ifile directive, attempting to include file:", m.group(2))
-          self.text = self.text.replace(m.group(1) + m.group(2), contents(m.group(2)))
+          self.text = self.text.replace(
+              m.group(1) + m.group(2), contents(m.group(2)))
+
+    # Multi-language support via regex
+    for m in re.finditer(r"\s*%(\w\w){(.+?)}%\n", self.text, flags=re.S):
+      if m:
+        print("Found language directive:",m.group(1))
+        self.text = self.text.replace(
+            "%"+m.group(1)+"{"+m.group(2)+"}%", "<div class='"+m.group(1)+"'>"+m.group(2)+"</div>")
     
   def getContent(self):
       if(not self.text):
@@ -132,7 +145,6 @@ class Content (object):
 
 
 if __name__ == "__main__":
-  import statics_config
   import os
 
   # Template construction
@@ -147,23 +159,26 @@ if __name__ == "__main__":
   if(statics_config.gitmessage):
     print("Commiting changes to repo")
     os.system("cd repo/ && git commit -a -m '"+statics_config.gitmessage+"'")
-
-  if(statics_config.gitpush):
-    print("Pushing changes to upstream")
-    os.system("cd repo/ && git push")
+    if(statics_config.gitpush):
+      print("Pushing changes to upstream")
+      os.system("cd repo/ && git push")
 
 </pre>
 <h4>statics_config.py</h4>
 <p>Accompanying config file for statics.py</p>
-<pre># define pages
+<pre># Define pages
 from statics import Content
 pages = [
   Content("Index",False,"index.html.tmpl"),
   Content("Code")
 ]
+# Define posts
 posts = []
+# Wether or not we should push to github after commit
 gitpush=True
+# Message to commit
 gitmessage="github.io page update"
+# gitmessage=False
 </pre>
 <script>onLoad();populate_code();</script>
     </div>
@@ -171,7 +186,7 @@ gitmessage="github.io page update"
 </body>
 <script>onLoad();</script>
 <footer>
-  <p>Copyright (c) 2021 Ernest Deak</p>
+  <p>Copyright &copy 2021 Ernest Deak</p>
   <p>All rights reserved.</p>
 </footer>
 </html>

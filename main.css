@@ -34,12 +34,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .float-picture {
   float: left;
-  margin-left: 40px;
-  margin-right: auto;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-left: 50px;
+  margin-right: 15px;
+  margin-top: 0px;
   width: auto;
   height: 128px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black;
+  background-color: black;
 }
 
 .bordered{
@@ -53,18 +56,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 20px;
   border-spacing: 20px;
   padding: 10px;
-  border-color: greenyellow;
-  background-color: greenyellow;
+  background-color: rgb(203, 255, 182);
   color: black;
 }
 
 .content-area{
-  float: right;
-  height: 720px;
-  width: 80%;
+  float: center;
+  width: 75%;
   margin-left: auto;
   margin-right: auto;
   padding: 0px 10px 20px 10px;
+  border-radius: 20px;
+  background-color: greenyellow;
+  padding: 10px 10px 10px 10px;
 }
 
 .hline {
@@ -92,4 +96,16 @@ pre{
 body {
   background-color: black;
   color: greenyellow;
+}
+
+img:hover{
+  cursor: pointer;
+}
+
+footer{
+  font-size: 8pt;
+  float: left;
+  text-align: center;
+  width: 100%;
+  height: 100px;
 }

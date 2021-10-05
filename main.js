@@ -3,8 +3,12 @@ const code_links = {
 };
 
 function onLoad(){
+  languageOff("en");
+  languageOn("sk");
   var elem = document.getElementById("emailp");
   if(elem){
+    console.log("emailp:",elem.firstChild());
+    elem = elem.firstChild;
     var text = elem.innerHTML.replace("[%EMAIL%]", unscramble());
     elem.innerHTML = text;
   }
@@ -14,20 +18,6 @@ function populate_code(){
   for(const [key, val] of Object.entries(code_links)){
     fetchCode(val, key);
   }
-}
-
-function populate_pages(){
-  const v =["./pages.html", "../pages.html"];
-  v.map(function (page) {
-    console.log(page);
-    fetch(page).then(function (r){return r.text()})
-      .then(function (d){
-        const e = document.getElementById("pages");
-        if(e){
-          e.innerHTML = d;
-        }
-      }).catch(function (e){})
-  })
 }
 
 function unscramble(){
@@ -49,4 +39,28 @@ function fetchCode(link, codename){
         e.innerHTML = r;
       }
     });
+}
+
+function languageOff(lang){
+  var elems = document.getElementsByClassName(lang);
+  for(let idx = 0; idx < elems.length; idx++){
+    elems.item(idx).style.display="none";
+  }
+  console.log(elems);
+}
+function languageOn(lang){
+  var elems = document.getElementsByClassName(lang);
+  for(let idx = 0; idx < elems.length; idx++){
+    elems.item(idx).style.display="block";
+  }
+  console.log(elems);
+}
+function language(lang){
+  if(lang == "sk"){
+    languageOff("en");
+    languageOn("sk");
+  }else if(lang == "en"){
+    languageOff("sk");
+    languageOn("en");
+  }
 }
