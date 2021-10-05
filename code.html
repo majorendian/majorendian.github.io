@@ -21,7 +21,99 @@
 <p>Tail-Recursive factorial function in perl</p>
 <pre id="factorial.pl"></pre>
 <pre>
-  .ifile statics.py
+   #!/usr/bin/python3
+import re
+
+def contents(filename):
+  with open(filename) as fp:
+    return fp.read()
+
+class Page (object):
+  standardKeys = {
+    ".iheader" : contents("header.html"),
+    ".ipages" : contents("pages.html"),
+    ".ifooter" : contents("footer.html"),
+    ".idefaultjs" : "<script>onLoad();</script>"
+  }
+  def __init__(self, pagename, templatefile, contentfile, re={}):
+    self.name = pagename
+    self.template = contents(templatefile)
+    self.keys = re
+    self.content = contents(contentfile)
+    self.text = None
+
+  def replaceKeys(self, extrakeys={}):
+    for k,v in Page.standardKeys.items():
+      self.template = self.template.replace(k, v)
+
+    for k,v in self.keys.items():
+      self.template = self.template.replace(k, v)
+
+    for k,v in extrakeys.items():
+      self.template = self.template.replace(k, v)
+
+
+    self.text = self.template.replace(".icontent", self.content)
+
+    # Regular expressions last
+    # so that we can use them even in our
+    # content text
+
+    re.DEBUG = True
+    for m in re.finditer(r"\ (\S+)", self.text):
+      if(m):
+        if(m.group(0)):
+          print("Found  directive, attempting to include file:", m.group(1))
+          self.text = self.text.replace(m.group(1), contents(m.group(1))).replace("","")
+    
+  def getContent(self):
+      if(not self.text):
+        raise Exception("Template has not been processed")
+      return self.text
+
+class Content (object):
+  def __init__(self, name, subpage=False, template="page.html.tmpl"):
+    self.name = name
+    self.path = "./"
+    if(type(subpage) == str):
+      self.path = "./" + subpage + "/"
+    self.in_path = self.path + name.lower() + ".in.html"
+    self.out_path = self.path + name.lower() + ".html"
+    self.content = contents(self.in_path)
+    self.page = Page(name, template, self.in_path, {
+      "$subtitle" : self.name,
+    })
+    self.page.replaceKeys()
+    self.content = self.page.getContent()
+
+  def writePage(self):
+    print("Writting page",self.name,"as",self.out_path)
+    with open(self.out_path,"w") as fp:
+      fp.write(self.content)
+    print("Done")
+
+
+if __name__ == "__main__":
+  import statics_config
+  import os
+
+  # Template construction
+
+  for C in statics_config.pages:
+    C.writePage()
+    print("Moving file",C.out_path,"into repository")
+    os.system("mv "+C.out_path+" repo/")
+
+  # Configuration actions
+
+  if(statics_config.gitmessage):
+    print("Commiting changes to repo")
+    os.system("cd repo/ && git commit -a -m '"+statics_config.gitmessage+"'")
+
+  if(statics_config.gitpush):
+    print("Pushing changes to upstream")
+    os.system("cd repo/ && git push")
+
 </pre>
 <script>onLoad();populate_code();</script>
     </div>
