@@ -61,7 +61,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .content-area{
   float: right;
   height: 720px;
-  scroll-behavior: auto;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
