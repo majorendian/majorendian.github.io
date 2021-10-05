@@ -59,7 +59,6 @@ class Page (object):
     # so that we can use them even in our
     # content text
 
-    re.DEBUG = True
     for m in re.finditer(r"\ (\S+)", self.text):
       if(m):
         if(m.group(0)):
