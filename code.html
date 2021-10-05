@@ -20,8 +20,7 @@
       <h3>factorial.pl</h3>
 <p>Tail-Recursive factorial function in perl</p>
 <pre id="factorial.pl"></pre>
-<pre>
-  .ifile #!/usr/bin/python3
+<pre>#!/usr/bin/python3
 
 # BSD 3-Clause License
 # Copyright (c) 2021, Ernest Deák
@@ -90,11 +89,11 @@ class Page (object):
     # so that we can use them even in our
     # content text
 
-    for m in re.finditer(r"\s*\.ifile (\S+)", self.text):
+    for m in re.finditer(r"(\s*\.ifile )(\S+)", self.text):
       if(m):
         if(m.group(0)):
-          print("Found .ifile directive, attempting to include file:", m.group(1))
-          self.text = self.text.replace(m.group(1), contents(m.group(1))).replace(m.group(0),"")
+          print("Found .ifile directive, attempting to include file:", m.group(2))
+          self.text = self.text.replace(m.group(2), contents(m.group(2))).replace(m.group(1),"").replace(m.group(0),"")
     
   def getContent(self):
       if(not self.text):
